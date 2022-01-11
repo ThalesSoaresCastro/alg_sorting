@@ -1,0 +1,44 @@
+version: '3'
+services:
+  redis-api-dev:
+    image: redis:6.2.6
+    container_name: redis-api-dev
+    env_file: ./.env
+    command: redis-server --requirepass $DEV_REDIS_PASSWORD --appendonly yes
+    #hostname: redis
+    ports:
+      - $DEV_REDIS_LOCAL_PORT:$DEV_REDIS_DOCKER_PORT
+    volumes:
+      - ./Redis-dev:/var/lib/postgresql/data
+    expose:
+      - $DEV_REDIS_LOCAL_PORT
+    networks:
+      - api-dev
+  api-dev:
+    container_name: api-dev
+    build:
+      context: './api'
+      dockerfile: Dockerfile-Dev
+    env_file: ./.env
+    command: python /code/debug_server.py
+    environment:
+      - REDIS_PORT=$DEV_REDIS_DOCKER_PORT
+      - REDIS_HOST_NAME=$DEV_API_REDIS_HOST
+      - REDIS_PASSWORD=$DEV_REDIS_PASSWORD
+      - API_PORT=$DEV_API_DOCKER_PORT
+    ports:
+      - $DEV_API_LOCAL_PORT:$DEV_API_DOCKER_PORT
+    expose:
+      - $DEV_API_LOCAL_PORT
+    volumes:
+    - ./api:/code
+    depends_on:
+      - redis-api-dev
+    networks:
+      - api-dev
+
+volumes:
+  Redis-dev:
+networks:
+  api-dev:
+    driver: bridge

@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+
+  redis-api:
+    image: redis:6.2.6
+    container_name: redis-api
+    env_file: ./.env
+    command: redis-server --requirepass $REDIS_PASSWORD --appendonly yes
+    #hostname: redis
+    ports:
+      - $REDIS_LOCAL_PORT:$REDIS_DOCKER_PORT
+      #- "6379:6379"
+    volumes:
+      - ./Redis:/var/lib/postgresql/data
+    expose:
+      - $REDIS_LOCAL_PORT
+
+  #mongodb:
+  #  image: mongo:4.4.12-rc1-focal
+  #  container_name: mongodb
+  #  env_file: ./.env
+  #  environment:
+  #    - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
+  #    - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+  #    - MONGO_INITDB_DATABASE=$MONGO_DATABASE
+  #  volumes:
+  #    - ./Mongodb:/data/db
+  #  ports:
+  #    - $MONGO_LOCAL_PORT:$MONGO_DOCKER_PORT
+  #  restart: unless-stopped
+
+volumes:
+  #Mongodb:
+  Redis:
+  
