@@ -3,8 +3,6 @@ import os
 import redis
 import json
 
-
-import traceback2 as traceback
 from logging42 import logger
 
 from dotenv import load_dotenv
@@ -24,10 +22,11 @@ cache = redis.Redis(#host='localhost',
                     password=REDIS_PASSWORD)
 
 def scrapping():
+    arr_scrapping=[]
     #print('Iniciando o scrapping dos dados:\n')
     logger.info('Iniciando processo de extração dos dados da api')
-    init_scpt=timeit.default_timer()    
-    arr_scrapping = scrapping_data()
+    init_scpt=timeit.default_timer() 
+    scrapping_data(arr_scrapping)
     fim_scpt=timeit.default_timer() 
     if arr_scrapping:
         logger.info(f'\nQuantidade de elementos obtidos: {len(arr_scrapping)}.\
